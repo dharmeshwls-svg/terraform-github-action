@@ -6,6 +6,12 @@ resource "aws_instance" "web" {
   vpc_security_group_ids = [var.sg_id]
   associate_public_ip_address = true
   availability_zone = data.aws_availability_zones.available.names[count.index]
+  ebs_block_device {
+    device_name = "/dev/xvda"
+    volume_size = 8
+    volume_type = "gp2"
+    delete_on_termination = true
+  }
   user_data = <<EOF
     #!/bin/bash
     sudo yum update -y

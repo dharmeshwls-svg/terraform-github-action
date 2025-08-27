@@ -22,5 +22,23 @@ module "alb" {
     vpc_id = module.vpc.vpc_id
     instances = module.ec2.instances
 }
+# module "dns" {
+#     source = "./modules/dns"
+#     domain_name = var.domain_name
+#     alb_dns = module.alb.aws_alb_dns_name
+#     alb_zone_id = module.alb.aws_alb_zone_id
+#     vpc_id = module.vpc.vpc_id
+# }
+module "zone" {
+    source = "./modules/zone"
+    domain_name = var.domain_name
 
-    
+}
+module "recordset" {
+    source = "./modules/recordset"
+    hosted_zone_id = module.zone.zone_id
+    record_name = "web-elb"
+    load_balancer_dns_name = module.alb.aws_alb_dns_name
+    load_balance_zone_id = module.alb.aws_alb_zone_id
+  
+}
